@@ -3,16 +3,21 @@ import MetalKit
 import PlaygroundSupport
 
 class MyMetalView: MTKView {
+    var vertexData: [Float]!
     var vertexBuffer: MTLBuffer!
+
     var renderPipelineState: MTLRenderPipelineState!
+
+    var cmdQueue: MTLCommandQueue!
 
     public override init(frame frameRect: CGRect, device: MTLDevice?) {
         super.init(frame: frameRect, device: device)
 
-        self.device = device
+        self.device = device!
 
         self.initVertex()
         self.initShader()
+        self.initRender()
     }
 
     required init(coder: NSCoder) {
@@ -20,7 +25,7 @@ class MyMetalView: MTKView {
     }
 
     public func initVertex() {
-        let vertexData = [-0.7, -0.7, 0.0, 1.0,
+        vertexData = [-0.7, -0.7, 0.0, 1.0,
                           0.7, -0.7, 0.0, 1.0,
                           0.0, 0.7, 0.0, 1.0]
 
@@ -30,24 +35,6 @@ class MyMetalView: MTKView {
     }
 
     public func initShader() {
-
-    }
-
-    public override func draw(_ dirtyRect: NSRect) {
-        let renderPassDescriptor = MTLRenderPassDescriptor()
-        let device = self.device
-        let drawable = self.currentDrawable
-        
-        let bgColor = MTLClearColor(red: 0.3, green: 0.4, blue: 0.5, alpha: 1)
-        
-        renderPassDescriptor.colorAttachments[0].texture = drawable?.texture
-        renderPassDescriptor.colorAttachments[0].clearColor = bgColor
-        renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadAction.clear
-        
-        let cmdQueue = device?.makeCommandQueue()
-
-
-
         let shader = """
 #include <metal_stdlib>
 
@@ -66,13 +53,11 @@ fragment float4 fragment_func(Vertex vert [[stage_in]]) {
     return float4(0.7, 1, 1, 1);
 }
 """
-        var renderPiplineState: MTLRenderPipelineState?
-
         do {
-            let lib = try device?.makeLibrary(source: shader, options: nil)
+            let library = try self.device?.makeLibrary(source: shader, options: nil)
 
-            let vertex_func = lib?.makeFunction(name: "vertex_func")
-            let fragment_func = lib?.makeFunction(name: "fragment_func")
+            let vertex_func = library?.makeFunction(name: "vertex_func")
+            let fragment_func = library?.makeFunction(name: "fragment_func")
 
             let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
 
@@ -81,31 +66,42 @@ fragment float4 fragment_func(Vertex vert [[stage_in]]) {
 
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormat.bgra8Unorm
 
-            renderPiplineState = try device?.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
+            renderPipelineState = try self.device?.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         }
         catch let e {
-            print("xxxx")
             print("\(e)")
             fatalError()
         }
+    }
 
-        let cmdBuffer = cmdQueue?.makeCommandBuffer()
-        
-        let cmdEncoder = cmdBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+    public func initRender() {
+        self.cmdQueue = self.device!.makeCommandQueue()
+    }
 
-        cmdEncoder?.setRenderPipelineState(renderPiplineState!)
-        cmdEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        cmdEncoder?.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 3)
+    public override func draw(_ dirtyRect: NSRect) {
+        let renderPassDescriptor = self.currentRenderPassDescriptor!
+        let device = self.device!
+        let drawable = self.currentDrawable
+        
+        let bgColor = MTLClearColor(red: 0.3, green: 0.4, blue: 0.5, alpha: 1)
 
-        cmdEncoder?.endEncoding()
+        renderPassDescriptor.colorAttachments[0].clearColor = bgColor
+
+        let cmdBuffer = cmdQueue.makeCommandBuffer()!
         
-        cmdBuffer?.present(drawable!)
+        let cmdEncoder = cmdBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+
+        cmdEncoder.setRenderPipelineState(self.renderPipelineState!)
+        cmdEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        cmdEncoder.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 3)
+        cmdEncoder.endEncoding()
         
-        cmdBuffer?.commit()
+        cmdBuffer.present(drawable!)
+        cmdBuffer.commit()
     }
 }
 
-let rect = CGRect(x: 0, y: 0, width: 320, height: 480)
+let rect = CGRect(x: 0, y: 0, width: 800, height: 600)
 let device = MTLCreateSystemDefaultDevice()
 
 let view = MyMetalView(frame: rect, device: device)
