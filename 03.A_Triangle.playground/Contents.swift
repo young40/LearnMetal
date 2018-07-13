@@ -35,7 +35,7 @@ class MyMetalView: MTKView {
     }
 
     public func initShader() {
-        let shader = """
+        let shaderStr = """
 #include <metal_stdlib>
 
 using namespace metal;
@@ -54,7 +54,7 @@ fragment float4 fragment_func(Vertex vert [[stage_in]]) {
 }
 """
         do {
-            let library = try self.device?.makeLibrary(source: shader, options: nil)
+            let library = try self.device?.makeLibrary(source: shaderStr, options: nil)
 
             let vertex_func = library?.makeFunction(name: "vertex_func")
             let fragment_func = library?.makeFunction(name: "fragment_func")
@@ -80,7 +80,6 @@ fragment float4 fragment_func(Vertex vert [[stage_in]]) {
 
     public override func draw(_ dirtyRect: NSRect) {
         let renderPassDescriptor = self.currentRenderPassDescriptor!
-        let device = self.device!
         let drawable = self.currentDrawable
         
         let bgColor = MTLClearColor(red: 0.3, green: 0.4, blue: 0.5, alpha: 1)
