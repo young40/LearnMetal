@@ -13,6 +13,21 @@ struct Vertex {
     var color: vector_float4
 }
 
+struct Matrix {
+    var m: [Float]
+    
+    init() {
+        m = [1, 0, 0, 0,
+             0, 1, 0, 0,
+             0, 0, 1, 0,
+             0, 0, 0, 1]
+    }
+    
+    func translationMatrix( matrix: Matrix, _ postion: float3) -> Matrix {
+        return matrix
+    }
+}
+
 class MyMetalView: MTKView {
     private var vertexData: [Vertex]!
     private var vertexBuffer: MTLBuffer!
