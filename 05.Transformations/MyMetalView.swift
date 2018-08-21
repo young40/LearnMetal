@@ -125,12 +125,12 @@ class MyMetalView: MTKView {
 
         let cmdEncoder = cmdBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
-        cmdEncoder.setRenderPipelineState(self.renderPipelineState)
-        cmdEncoder.setVertexBuffer(self.vertexBuffer, offset: 0, index: 0)
-        
-        cmdEncoder.setVertexBuffer(self.uniformBuffer, offset: 0, index: 1)
-        
-        cmdEncoder.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 3)
+//        cmdEncoder.setRenderPipelineState(self.renderPipelineState)
+//        cmdEncoder.setVertexBuffer(self.vertexBuffer, offset: 0, index: 0)
+//        
+//        cmdEncoder.setVertexBuffer(self.uniformBuffer, offset: 0, index: 1)
+//        
+//        cmdEncoder.drawPrimitives(type: MTLPrimitiveType.triangle, vertexStart: 0, vertexCount: 3)
 
         cmdEncoder.endEncoding()
 
