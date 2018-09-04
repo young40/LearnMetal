@@ -53,7 +53,7 @@ class MyMetalView: MTKView {
         let commandEncoder = commandBuffer?.makeComputeCommandEncoder()
         commandEncoder?.setComputePipelineState(cps)
         commandEncoder?.setTexture(drawable.texture, index: 0)
-        let threadGroupCount = MTLSizeMake(8, 8, 1)
+        let threadGroupCount = MTLSizeMake(1, 1, 1)
         let threadGroups = MTLSizeMake(drawable.texture.width/threadGroupCount.width,
                                        drawable.texture.height/threadGroupCount.height, 1)
         commandEncoder?.dispatchThreads(threadGroups, threadsPerThreadgroup: threadGroupCount)
