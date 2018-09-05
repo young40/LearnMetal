@@ -45,11 +45,6 @@ class MyMetalView: MTKView {
     public override func draw(_ dirtyRect: NSRect) {
         let drawable = self.currentDrawable!
         
-        let x = drawable.texture.width
-        let y = drawable.texture.height
-        
-        let a = cps.maxTotalThreadsPerThreadgroup
-        
         let commandBuffer = queue.makeCommandBuffer()
         
         let commandEncoder = commandBuffer?.makeComputeCommandEncoder()
