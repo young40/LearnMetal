@@ -48,15 +48,19 @@ class MyMetalView: MTKView {
         let x = drawable.texture.width
         let y = drawable.texture.height
         
+        let a = cps.maxTotalThreadsPerThreadgroup
+        
         let commandBuffer = queue.makeCommandBuffer()
         
         let commandEncoder = commandBuffer?.makeComputeCommandEncoder()
         commandEncoder?.setComputePipelineState(cps)
         commandEncoder?.setTexture(drawable.texture, index: 0)
-        let threadGroupCount = MTLSizeMake(1, 1, 1)
-        let threadGroups = MTLSizeMake(drawable.texture.width/threadGroupCount.width,
-                                       drawable.texture.height/threadGroupCount.height, 1)
-        commandEncoder?.dispatchThreads(threadGroups, threadsPerThreadgroup: threadGroupCount)
+        
+        let threadGroupPreGid = MTLSize(width: 2, height: 2, depth: 1)
+        let threadGroupCount = MTLSize(width: (drawable.texture.width+threadGroupPreGid.width-1)/threadGroupPreGid.width,
+                                       height: (drawable.texture.height + threadGroupPreGid.height-1)/threadGroupPreGid.height, depth: 1)
+        
+        commandEncoder?.dispatchThreadgroups(threadGroupCount, threadsPerThreadgroup: threadGroupPreGid)
         commandEncoder?.endEncoding()
         
         commandBuffer?.present(drawable)
