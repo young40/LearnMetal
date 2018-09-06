@@ -11,6 +11,8 @@
 		D562DC3621416F3500978C8C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D562DC3521416F3500978C8C /* ViewController.swift */; };
 		D562DC3821416F3700978C8C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D562DC3721416F3700978C8C /* Assets.xcassets */; };
 		D562DC3B21416F3700978C8C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D562DC3921416F3700978C8C /* Main.storyboard */; };
+		D562DC4421416FD800978C8C /* MyMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D562DC4321416FD800978C8C /* MyMetalView.swift */; };
+		D562DC46214170D700978C8C /* MyShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = D562DC45214170D700978C8C /* MyShader.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +23,8 @@
 		D562DC3A21416F3700978C8C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D562DC3C21416F3700978C8C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D562DC3D21416F3700978C8C /* _8_MagicFlower.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = _8_MagicFlower.entitlements; sourceTree = "<group>"; };
+		D562DC4321416FD800978C8C /* MyMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMetalView.swift; sourceTree = "<group>"; };
+		D562DC45214170D700978C8C /* MyShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MyShader.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,8 @@
 				D562DC3921416F3700978C8C /* Main.storyboard */,
 				D562DC3C21416F3700978C8C /* Info.plist */,
 				D562DC3D21416F3700978C8C /* _8_MagicFlower.entitlements */,
+				D562DC4321416FD800978C8C /* MyMetalView.swift */,
+				D562DC45214170D700978C8C /* MyShader.metal */,
 			);
 			path = 08.MagicFlower;
 			sourceTree = "<group>";
@@ -133,8 +139,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D562DC46214170D700978C8C /* MyShader.metal in Sources */,
 				D562DC3621416F3500978C8C /* ViewController.swift in Sources */,
 				D562DC3421416F3500978C8C /* AppDelegate.swift in Sources */,
+				D562DC4421416FD800978C8C /* MyMetalView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
