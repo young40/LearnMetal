@@ -13,6 +13,9 @@ class MyMetalView: MTKView {
     
     var cmdQueue: MTLCommandQueue!
     
+    var timer: Float = 0
+    var timerBuffer: MTLBuffer!
+    
     required init(coder: NSCoder) {
         super.init(coder: coder)
         
@@ -35,6 +38,14 @@ class MyMetalView: MTKView {
         } catch let e {
            fatalError("\(e)")
         }
+        
+        timerBuffer = device?.makeBuffer(length: MemoryLayout<Float>.size, options: [])
+    }
+    
+    func update() {
+        timer += 0.01
+        let timerPointer = timerBuffer.contents()
+        memcpy(timerPointer, &timer, MemoryLayout<Float>.size)
     }
     
     override func draw(_ dirtyRect: NSRect) {
@@ -48,6 +59,9 @@ class MyMetalView: MTKView {
         
         cmdEncoder.setTexture(drawable.texture, index: 0)
         cmdEncoder.setComputePipelineState(cps)
+        
+        cmdEncoder.setBuffer(timerBuffer, offset: 0, index: 0)
+        update()
         
         let threadPreGid = MTLSizeMake(8, 8, 1)
         let threadCount  = MTLSizeMake((drawable.texture.width + threadPreGid.width - 1) / threadPreGid.width,
