@@ -16,10 +16,13 @@ class MyMetalView: MTKView {
     var timer: Float = 0
     var timerBuffer: MTLBuffer!
     
+    var texture: MTLTexture!
+    
     required init(coder: NSCoder) {
         super.init(coder: coder)
         
         initShader()
+        initTexture()
     }
     
     func initShader() {
@@ -42,6 +45,12 @@ class MyMetalView: MTKView {
         timerBuffer = device?.makeBuffer(length: MemoryLayout<Float>.size, options: [])
     }
     
+    func initTexture() {
+        let path = Bundle.main.path(forResource: "texture", ofType: "jpg")!
+        let loader = MTKTextureLoader(device: device!)
+        texture = try! loader.newTexture(URL: URL(fileURLWithPath: path), options: nil)
+    }
+    
     func update() {
         timer += 0.01
         let timerPointer = timerBuffer.contents()
@@ -61,6 +70,9 @@ class MyMetalView: MTKView {
         cmdEncoder.setComputePipelineState(cps)
         
         cmdEncoder.setBuffer(timerBuffer, offset: 0, index: 0)
+        
+        cmdEncoder.setTexture(texture, index: 1)
+        
         update()
         
         let threadPreGid = MTLSizeMake(8, 8, 1)

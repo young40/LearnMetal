@@ -39,6 +39,7 @@ float fbm(float2 uv)
 }
 
 kernel void computer(texture2d<float, access::write> output [[texture(0)]],
+                     texture2d<float, access::read> input [[texture(1)]],
                      constant float &timer [[buffer(0)]],
                      uint2 gid [[thread_position_in_grid]]) {
     int width = output.get_width();
@@ -54,5 +55,8 @@ kernel void computer(texture2d<float, access::write> output [[texture(0)]],
     
     uv = fmod(uv + float2(timer * 0.2, 0), float2(width, height));
     float t = fbm( uv * 3 );
-    output.write(distance < 0 ? float4(float3(t), 1) : float4(0), gid);
+//    output.write(distance < 0 ? float4(float3(t), 1) : float4(0), gid);
+    float4 color = input.read(gid);
+    gid.y = input.get_height() - gid.y;
+    output.write(color, gid);
 }
