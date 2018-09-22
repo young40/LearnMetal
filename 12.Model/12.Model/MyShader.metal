@@ -52,5 +52,7 @@ fragment half4 fragment_func(VertexOut fragments [[stage_in]],
     
     float4 texture = textures.sample(samplers, fragments.texCoords);
     
+//    return half4(baseColor);
+//    return half4(baseColor * occlusion);
     return half4(baseColor * occlusion * texture);
 }
