@@ -131,4 +131,40 @@ class MyMetalView: MTKView {
         let ms = try! MTKMesh.newMeshes(asset: asset, device: device!)
         meshes = ms.metalKitMeshes
     }
+    
+    public override func draw(_ dirtyRect: NSRect) {
+        let drawable = currentDrawable!
+        let descriptor = currentRenderPassDescriptor!
+        
+        descriptor.colorAttachments[0].texture = drawable.texture
+        descriptor.colorAttachments[0].loadAction = .clear
+        descriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.3, 0.4, 0.5, 1)
+        
+        let cmdBuffer = cmdQueue.makeCommandBuffer()!
+        
+        let cmdEncoder = cmdBuffer.makeRenderCommandEncoder(descriptor: descriptor)!
+        
+        cmdEncoder.setRenderPipelineState(renderPipelineState)
+        cmdEncoder.setDepthStencilState(depthStencilState)
+        cmdEncoder.setCullMode(.back)
+        cmdEncoder.setFrontFacing(.counterClockwise)
+        cmdEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 1)
+        cmdEncoder.setFragmentTexture(texture, index: 0)
+        
+        let mesh = meshes.first
+        let vertexBuffer = mesh?.vertexBuffers[0]
+        cmdEncoder.setVertexBuffer(vertexBuffer?.buffer, offset: vertexBuffer?.offset ?? 0, index: 0)
+        let submesh = mesh?.submeshes.first!
+        
+        cmdEncoder.drawIndexedPrimitives(type: (submesh?.primitiveType)!,
+                                         indexCount: (submesh?.indexCount)!,
+                                         indexType: (submesh?.indexType)!,
+                                         indexBuffer: (submesh?.indexBuffer.buffer)!,
+                                         indexBufferOffset: (submesh?.indexBuffer.offset)!)
+        
+        cmdEncoder.endEncoding()
+    
+        cmdBuffer.present(drawable)
+        cmdBuffer.commit()
+    }
 }
