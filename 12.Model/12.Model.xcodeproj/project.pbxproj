@@ -14,6 +14,8 @@
 		D5BD902B2154F6A100939A73 /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BD902A2154F6A100939A73 /* MathUtils.swift */; };
 		D5BD902D2154F6D000939A73 /* MyMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BD902C2154F6D000939A73 /* MyMetalView.swift */; };
 		D5BD902F2154F6E500939A73 /* MyShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = D5BD902E2154F6E500939A73 /* MyShader.metal */; };
+		D5BD90322155073400939A73 /* Farmhouse.obj in Resources */ = {isa = PBXBuildFile; fileRef = D5BD90302155073400939A73 /* Farmhouse.obj */; };
+		D5BD90332155073400939A73 /* Farmhouse.png in Resources */ = {isa = PBXBuildFile; fileRef = D5BD90312155073400939A73 /* Farmhouse.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		D5BD902A2154F6A100939A73 /* MathUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MathUtils.swift; path = ../../06.Cube/06.Cube/MathUtils.swift; sourceTree = "<group>"; };
 		D5BD902C2154F6D000939A73 /* MyMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMetalView.swift; sourceTree = "<group>"; };
 		D5BD902E2154F6E500939A73 /* MyShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MyShader.metal; sourceTree = "<group>"; };
+		D5BD90302155073400939A73 /* Farmhouse.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Farmhouse.obj; sourceTree = "<group>"; };
+		D5BD90312155073400939A73 /* Farmhouse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Farmhouse.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +72,8 @@
 				D5BD902A2154F6A100939A73 /* MathUtils.swift */,
 				D5BD902C2154F6D000939A73 /* MyMetalView.swift */,
 				D5BD902E2154F6E500939A73 /* MyShader.metal */,
+				D5BD90302155073400939A73 /* Farmhouse.obj */,
+				D5BD90312155073400939A73 /* Farmhouse.png */,
 			);
 			path = 12.Model;
 			sourceTree = "<group>";
@@ -131,6 +137,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5BD901F2154F68C00939A73 /* Assets.xcassets in Resources */,
+				D5BD90322155073400939A73 /* Farmhouse.obj in Resources */,
+				D5BD90332155073400939A73 /* Farmhouse.png in Resources */,
 				D5BD90222154F68C00939A73 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
