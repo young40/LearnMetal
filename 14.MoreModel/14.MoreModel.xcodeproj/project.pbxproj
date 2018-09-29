@@ -431,7 +431,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "LearnMetal.-4-MoreModel";
 				PRODUCT_NAME = 14.MoreModel;
 				SDKROOT = macosx;
@@ -453,7 +453,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "LearnMetal.-4-MoreModel";
 				PRODUCT_NAME = 14.MoreModel;
 				SDKROOT = macosx;
