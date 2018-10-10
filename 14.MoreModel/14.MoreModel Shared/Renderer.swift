@@ -10,6 +10,7 @@
 
 import Metal
 import MetalKit
+import ModelIO
 import simd
 
 // The 256 byte aligned size of our uniform structure
@@ -43,6 +44,10 @@ class Renderer: NSObject, MTKViewDelegate {
     var rotation: Float = 0
     
     var mesh: MTKMesh
+    
+    var meshes: [MTKMesh] = []
+    
+    var vertexDescriptor: MTLVertexDescriptor!
     
     init?(metalKitView: MTKView) {
         self.device = metalKitView.device!
@@ -95,6 +100,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
         super.init()
         
+        loadResource()
     }
     
     class func buildMetalVertexDescriptor() -> MTLVertexDescriptor {
@@ -289,6 +295,31 @@ class Renderer: NSObject, MTKViewDelegate {
         
         let aspect = Float(size.width) / Float(size.height)
         projectionMatrix = matrix_perspective_right_hand(fovyRadians: radians_from_degrees(65), aspectRatio:aspect, nearZ: 0.1, farZ: 100.0)
+    }
+    
+    func loadResource() {
+        let modelUrl = Bundle.main.url(forResource: "teapot", withExtension: "obj")
+        
+        let vertexDescriptor = MDLVertexDescriptor()
+        
+        vertexDescriptor.attributes[0] = MDLVertexAttribute(name: MDLVertexAttributePosition
+            , format: .float3, offset: 0, bufferIndex: 0)
+        vertexDescriptor.attributes[1] = MDLVertexAttribute(name: MDLVertexAttributeNormal, format: .float3, offset: MemoryLayout<Float>.size*3, bufferIndex: 0)
+        vertexDescriptor.attributes[2] = MDLVertexAttribute(name: MDLVertexAttributeTextureCoordinate, format: .float2, offset: MemoryLayout<Float>.size*6, bufferIndex: 0)
+        
+        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: MemoryLayout<Float>.size * 8)
+        
+        self.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(vertexDescriptor)
+
+        let bufferAllocator = MTKMeshBufferAllocator(device: self.device)
+        
+        let asset = MDLAsset(url: modelUrl, vertexDescriptor: vertexDescriptor, bufferAllocator: bufferAllocator)
+        
+        do {
+            (_, meshes) = try MTKMesh.newMeshes(asset: asset, device: device)
+        } catch {
+            fatalError("can't get meshes from model")
+        }
     }
 }
 
