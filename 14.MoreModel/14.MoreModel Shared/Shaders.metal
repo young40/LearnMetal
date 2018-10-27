@@ -63,10 +63,23 @@ struct VertexOut {
     float4 position [[position]];
     float4 eyeNormal;
     float4 eyePosition;
-    float2 textCoords;
+    float2 texCoords;
 };
 
 struct MyUniforms {
     float4x4 modelViewMatrix;
     float4x4 projectionMatrix;
 };
+
+vertex VertexOut vertex_main(VertexIn vertexIn [[stage_in]],
+                             constant MyUniforms &uniforms [[buffer(1)]])
+{
+    VertexOut vertexOut;
+    
+    vertexOut.position    = uniforms.projectionMatrix * uniforms.modelViewMatrix * float4(vertexIn.position, 1);
+    vertexOut.eyeNormal   = uniforms.modelViewMatrix * float4(vertexIn.normal, 0);
+    vertexOut.eyePosition = uniforms.modelViewMatrix * float4(vertexIn.position, 1);
+    vertexOut.texCoords   = vertexIn.texCoords;
+    
+    return vertexOut;
+}
