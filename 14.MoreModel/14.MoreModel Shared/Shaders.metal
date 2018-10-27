@@ -52,3 +52,21 @@ fragment float4 fragmentShader(ColorInOut in [[stage_in]],
 
     return float4(colorSample);
 }
+
+struct VertexIn {
+    float3 position  [[attribute(0)]];
+    float3 normal    [[attribute(1)]];
+    float2 texCoords [[attribute(2)]];
+};
+
+struct VertexOut {
+    float4 position [[position]];
+    float4 eyeNormal;
+    float4 eyePosition;
+    float2 textCoords;
+};
+
+struct MyUniforms {
+    float4x4 modelViewMatrix;
+    float4x4 projectionMatrix;
+};
