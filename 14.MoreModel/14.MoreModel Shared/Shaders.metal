@@ -83,3 +83,8 @@ vertex VertexOut vertex_main(VertexIn vertexIn [[stage_in]],
     
     return vertexOut;
 }
+
+fragment float4 fragment_main(VertexOut fragmentIn [[stage_in]])
+{
+    return float4(0.3, 0.4, 0.5, 1);
+}
