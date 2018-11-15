@@ -25,6 +25,7 @@ enum RendererError: Error {
 class Renderer: NSObject, MTKViewDelegate {
     
     public let device: MTLDevice
+    let mtkView: MTKView
     let commandQueue: MTLCommandQueue
     var dynamicUniformBuffer: MTLBuffer
     var pipelineState: MTLRenderPipelineState
@@ -98,9 +99,12 @@ class Renderer: NSObject, MTKViewDelegate {
             return nil
         }
         
+        self.mtkView = metalKitView
+        
         super.init()
         
         loadResource()
+        buildPipeline()
     }
     
     class func buildMetalVertexDescriptor() -> MTLVertexDescriptor {
@@ -217,7 +221,7 @@ class Renderer: NSObject, MTKViewDelegate {
         rotation += 0.01
     }
     
-    func draw(in view: MTKView) {
+    func draw2(in view: MTKView) {
         /// Per frame updates hare
         
         _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
@@ -319,6 +323,34 @@ class Renderer: NSObject, MTKViewDelegate {
         } catch {
             fatalError("can't get meshes from model")
         }
+    }
+    
+    func buildPipeline() {
+        guard let library = device.makeDefaultLibrary() else {
+            fatalError("load default library error.")
+        }
+        
+        let vertexFunction   = library.makeFunction(name: "vertex_main")
+        let fragmentFunction = library.makeFunction(name: "fragment_main")
+        
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        
+        pipelineDescriptor.vertexFunction   = vertexFunction
+        pipelineDescriptor.fragmentFunction = fragmentFunction
+        
+        pipelineDescriptor.colorAttachments[0].pixelFormat = self.mtkView.colorPixelFormat
+        
+        pipelineDescriptor.vertexDescriptor = self.vertexDescriptor
+        do {
+            pipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+        } catch {
+            print(error.localizedDescription)
+            fatalError("create render fail: \(error)")
+        }
+    }
+    
+    func draw(in view: MTKView) {
+        
     }
 }
 
