@@ -22,6 +22,8 @@
 		D5448000215E86C8008EE6D0 /* ShaderTypes.h in Resources */ = {isa = PBXBuildFile; fileRef = D5447FD9215E86C7008EE6D0 /* ShaderTypes.h */; };
 		D5448001215E86C8008EE6D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5447FDA215E86C8008EE6D0 /* Assets.xcassets */; };
 		D5448002215E86C8008EE6D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5447FDA215E86C8008EE6D0 /* Assets.xcassets */; };
+		D5605B74219F146500FC050C /* MathUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605B73219F146500FC050C /* MathUtilities.swift */; };
+		D5605B75219F146500FC050C /* MathUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605B73219F146500FC050C /* MathUtilities.swift */; };
 		D5EE81CD216E4B1800BA10ED /* teapot.obj in Resources */ = {isa = PBXBuildFile; fileRef = D5EE81CC216E4B1800BA10ED /* teapot.obj */; };
 		D5EE81CE216E4B1E00BA10ED /* teapot.obj in Resources */ = {isa = PBXBuildFile; fileRef = D5EE81CC216E4B1800BA10ED /* teapot.obj */; };
 /* End PBXBuildFile section */
@@ -42,6 +44,7 @@
 		D5447FF5215E86C8008EE6D0 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		D5447FF8215E86C8008EE6D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D5447FFA215E86C8008EE6D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D5605B73219F146500FC050C /* MathUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MathUtilities.swift; sourceTree = "<group>"; };
 		D5EE81CC216E4B1800BA10ED /* teapot.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = teapot.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +79,7 @@
 		D5447FD6215E86C7008EE6D0 /* 14.MoreModel Shared */ = {
 			isa = PBXGroup;
 			children = (
+				D5605B73219F146500FC050C /* MathUtilities.swift */,
 				D5EE81CC216E4B1800BA10ED /* teapot.obj */,
 				D5447FD7215E86C7008EE6D0 /* Shaders.metal */,
 				D5447FD8215E86C7008EE6D0 /* Renderer.swift */,
@@ -226,6 +230,7 @@
 				D5447FFB215E86C8008EE6D0 /* Shaders.metal in Sources */,
 				D5447FE5215E86C8008EE6D0 /* GameViewController.swift in Sources */,
 				D5447FE3215E86C8008EE6D0 /* AppDelegate.swift in Sources */,
+				D5605B74219F146500FC050C /* MathUtilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +242,7 @@
 				D5447FFC215E86C8008EE6D0 /* Shaders.metal in Sources */,
 				D5447FF6215E86C8008EE6D0 /* GameViewController.swift in Sources */,
 				D5447FF4215E86C8008EE6D0 /* AppDelegate.swift in Sources */,
+				D5605B75219F146500FC050C /* MathUtilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

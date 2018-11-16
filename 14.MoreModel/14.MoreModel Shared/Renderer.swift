@@ -22,15 +22,19 @@ enum RendererError: Error {
     case badVertexDescriptor
 }
 
+struct Uniformssss {
+    var modelViewMatrix: float4x4
+    var projectionMatrix: float4x4
+}
+
 class Renderer: NSObject, MTKViewDelegate {
-    
     public let device: MTLDevice
     let mtkView: MTKView
     let commandQueue: MTLCommandQueue
     var dynamicUniformBuffer: MTLBuffer
-    var pipelineState: MTLRenderPipelineState
-    var depthState: MTLDepthStencilState
-    var colorMap: MTLTexture
+    var pipelineState: MTLRenderPipelineState!
+//    var depthState: MTLDepthStencilState
+//    var colorMap: MTLTexture
     
     let inFlightSemaphore = DispatchSemaphore(value: maxBuffersInFlight)
     
@@ -44,11 +48,13 @@ class Renderer: NSObject, MTKViewDelegate {
     
     var rotation: Float = 0
     
-    var mesh: MTKMesh
+//    var mesh: MTKMesh
     
     var meshes: [MTKMesh] = []
     
     var vertexDescriptor: MTLVertexDescriptor!
+    
+    var time: Float = 0
     
     init?(metalKitView: MTKView) {
         self.device = metalKitView.device!
@@ -70,34 +76,34 @@ class Renderer: NSObject, MTKViewDelegate {
         
         let mtlVertexDescriptor = Renderer.buildMetalVertexDescriptor()
         
-        do {
-            pipelineState = try Renderer.buildRenderPipelineWithDevice(device: device,
-                                                                       metalKitView: metalKitView,
-                                                                       mtlVertexDescriptor: mtlVertexDescriptor)
-        } catch {
-            print("Unable to compile render pipeline state.  Error info: \(error)")
-            return nil
-        }
+//        do {
+//            pipelineState = try Renderer.buildRenderPipelineWithDevice(device: device,
+//                                                                       metalKitView: metalKitView,
+//                                                                       mtlVertexDescriptor: mtlVertexDescriptor)
+//        } catch {
+//            print("Unable to compile render pipeline state.  Error info: \(error)")
+//            return nil
+//        }
         
-        let depthStateDesciptor = MTLDepthStencilDescriptor()
-        depthStateDesciptor.depthCompareFunction = MTLCompareFunction.less
-        depthStateDesciptor.isDepthWriteEnabled = true
-        guard let state = device.makeDepthStencilState(descriptor:depthStateDesciptor) else { return nil }
-        depthState = state
-        
-        do {
-            mesh = try Renderer.buildMesh(device: device, mtlVertexDescriptor: mtlVertexDescriptor)
-        } catch {
-            print("Unable to build MetalKit Mesh. Error info: \(error)")
-            return nil
-        }
-        
-        do {
-            colorMap = try Renderer.loadTexture(device: device, textureName: "ColorMap")
-        } catch {
-            print("Unable to load texture. Error info: \(error)")
-            return nil
-        }
+//        let depthStateDesciptor = MTLDepthStencilDescriptor()
+//        depthStateDesciptor.depthCompareFunction = MTLCompareFunction.less
+//        depthStateDesciptor.isDepthWriteEnabled = true
+//        guard let state = device.makeDepthStencilState(descriptor:depthStateDesciptor) else { return nil }
+//        depthState = state
+//
+//        do {
+//            mesh = try Renderer.buildMesh(device: device, mtlVertexDescriptor: mtlVertexDescriptor)
+//        } catch {
+//            print("Unable to build MetalKit Mesh. Error info: \(error)")
+//            return nil
+//        }
+//
+//        do {
+//            colorMap = try Renderer.loadTexture(device: device, textureName: "ColorMap")
+//        } catch {
+//            print("Unable to load texture. Error info: \(error)")
+//            return nil
+//        }
         
         self.mtkView = metalKitView
         
@@ -221,86 +227,6 @@ class Renderer: NSObject, MTKViewDelegate {
         rotation += 0.01
     }
     
-    func draw2(in view: MTKView) {
-        /// Per frame updates hare
-        
-        _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
-        
-        if let commandBuffer = commandQueue.makeCommandBuffer() {
-            
-            let semaphore = inFlightSemaphore
-            commandBuffer.addCompletedHandler { (_ commandBuffer)-> Swift.Void in
-                semaphore.signal()
-            }
-            
-            self.updateDynamicBufferState()
-            
-            self.updateGameState()
-            
-            /// Delay getting the currentRenderPassDescriptor until we absolutely need it to avoid
-            ///   holding onto the drawable and blocking the display pipeline any longer than necessary
-            let renderPassDescriptor = view.currentRenderPassDescriptor
-            
-            if let renderPassDescriptor = renderPassDescriptor, let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) {
-                
-                /// Final pass rendering code here
-                renderEncoder.label = "Primary Render Encoder"
-                
-                renderEncoder.pushDebugGroup("Draw Box")
-                
-                renderEncoder.setCullMode(.back)
-                
-                renderEncoder.setFrontFacing(.counterClockwise)
-                
-                renderEncoder.setRenderPipelineState(pipelineState)
-                
-                renderEncoder.setDepthStencilState(depthState)
-                
-                renderEncoder.setVertexBuffer(dynamicUniformBuffer, offset:uniformBufferOffset, index: BufferIndex.uniforms.rawValue)
-                renderEncoder.setFragmentBuffer(dynamicUniformBuffer, offset:uniformBufferOffset, index: BufferIndex.uniforms.rawValue)
-                
-                for (index, element) in mesh.vertexDescriptor.layouts.enumerated() {
-                    guard let layout = element as? MDLVertexBufferLayout else {
-                        return
-                    }
-                    
-                    if layout.stride != 0 {
-                        let buffer = mesh.vertexBuffers[index]
-                        renderEncoder.setVertexBuffer(buffer.buffer, offset:buffer.offset, index: index)
-                    }
-                }
-                
-                renderEncoder.setFragmentTexture(colorMap, index: TextureIndex.color.rawValue)
-                
-                for submesh in mesh.submeshes {
-                    renderEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
-                                                        indexCount: submesh.indexCount,
-                                                        indexType: submesh.indexType,
-                                                        indexBuffer: submesh.indexBuffer.buffer,
-                                                        indexBufferOffset: submesh.indexBuffer.offset)
-                    
-                }
-                
-                renderEncoder.popDebugGroup()
-                
-                renderEncoder.endEncoding()
-                
-                if let drawable = view.currentDrawable {
-                    commandBuffer.present(drawable)
-                }
-            }
-            
-            commandBuffer.commit()
-        }
-    }
-    
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        /// Respond to drawable size or orientation changes here
-        
-        let aspect = Float(size.width) / Float(size.height)
-        projectionMatrix = matrix_perspective_right_hand(fovyRadians: radians_from_degrees(65), aspectRatio:aspect, nearZ: 0.1, farZ: 100.0)
-    }
-    
     func loadResource() {
         let modelUrl = Bundle.main.url(forResource: "teapot", withExtension: "obj")
         
@@ -339,6 +265,8 @@ class Renderer: NSObject, MTKViewDelegate {
         pipelineDescriptor.fragmentFunction = fragmentFunction
         
         pipelineDescriptor.colorAttachments[0].pixelFormat = self.mtkView.colorPixelFormat
+        pipelineDescriptor.depthAttachmentPixelFormat      = self.mtkView.depthStencilPixelFormat
+        pipelineDescriptor.stencilAttachmentPixelFormat    = self.mtkView.depthStencilPixelFormat
         
         pipelineDescriptor.vertexDescriptor = self.vertexDescriptor
         do {
@@ -350,6 +278,52 @@ class Renderer: NSObject, MTKViewDelegate {
     }
     
     func draw(in view: MTKView) {
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+        
+        if let renderPassDescriptor = view.currentRenderPassDescriptor,
+           let drawable = view.currentDrawable
+        {
+            let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+            
+            time += 1 / Float(mtkView.preferredFramesPerSecond)
+            let angle = time
+            let modelMatrix = float4x4(rotationAbout: float3(0, 1, 0), by: angle) *
+                              float4x4(scaleBy: 2)
+            
+            let viewMatrix = float4x4(translationBy: float3(0, 0, -2))
+            let modelViewMatrix = viewMatrix * modelMatrix
+            let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+            let projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
+            
+            var uniforms = Uniformssss(modelViewMatrix: modelViewMatrix, projectionMatrix: projectionMatrix)
+            
+            commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniformssss>.size, index: 1)
+            
+            commandEncoder.setRenderPipelineState(pipelineState)
+            
+            for mesh in meshes
+            {
+                let vertexBuffer = mesh.vertexBuffers.first!
+                commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+                
+                for submesh in mesh.submeshes
+                {
+                    let indexBuffer = submesh.indexBuffer
+                    commandEncoder.drawIndexedPrimitives(type:       submesh.primitiveType,
+                                                         indexCount: submesh.indexCount,
+                                                         indexType:  submesh.indexType,
+                                                         indexBuffer:       indexBuffer.buffer,
+                                                         indexBufferOffset: indexBuffer.offset)
+                }
+            }
+            
+            commandEncoder.endEncoding()
+            commandBuffer.present(drawable)
+            commandBuffer.commit()
+        }
+    }
+    
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         
     }
 }
