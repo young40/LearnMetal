@@ -61,6 +61,8 @@ struct VertexIn {
 
 struct VertexOut {
     float4 position [[position]];
+    float3 worldNormal;
+    float3 worldPosition;
     float4 eyeNormal;
     float4 eyePosition;
     float2 texCoords;
@@ -69,14 +71,24 @@ struct VertexOut {
 struct MyUniforms {
     float4x4 modelViewMatrix;
     float4x4 projectionMatrix;
+    float3x3 normalMatrix;
 };
+
+constant float3 ambientIntensity = 0.1;
+constant float3 lightPosition = (2, 2, 2);
+constant float3 lightColor = (1, 1, 1);
+constant float3 baseColor(1.0, 0, 0);
 
 vertex VertexOut vertex_main(VertexIn vertexIn [[stage_in]],
                              constant MyUniforms &uniforms [[buffer(1)]])
 {
     VertexOut vertexOut;
     
+    float4 worldPosition = uniforms.modelViewMatrix * float4(vertexIn.position, 1);
+    
     vertexOut.position    = uniforms.projectionMatrix * uniforms.modelViewMatrix * float4(vertexIn.position, 1);
+    vertexOut.worldPosition = worldPosition.xyz;
+    vertexOut.worldNormal = uniforms.normalMatrix * vertexIn.normal;
     vertexOut.eyeNormal   = uniforms.modelViewMatrix * float4(vertexIn.normal, 0);
     vertexOut.eyePosition = uniforms.modelViewMatrix * float4(vertexIn.position, 1);
     vertexOut.texCoords   = vertexIn.texCoords;
@@ -86,7 +98,12 @@ vertex VertexOut vertex_main(VertexIn vertexIn [[stage_in]],
 
 fragment float4 fragment_main(VertexOut fragmentIn [[stage_in]])
 {
-    float3 normal = normalize(fragmentIn.eyeNormal.xyz);
-    return float4(abs(normal), 1);
-//    return float4(0.3, 0.4, 0.5, 1);
+    float3 N = normalize(fragmentIn.worldNormal.xyz);
+    float3 L = normalize(lightPosition - fragmentIn.worldPosition.xyz);
+    
+    float3 diffuseIntensity = saturate(dot(N, L));
+    
+    float3 finalColor = saturate(ambientIntensity + diffuseIntensity) * lightColor * baseColor;
+    
+    return float4(finalColor, 1);
 }

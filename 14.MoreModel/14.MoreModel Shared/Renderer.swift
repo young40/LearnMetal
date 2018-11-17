@@ -25,6 +25,7 @@ enum RendererError: Error {
 struct Uniformssss {
     var modelViewMatrix: float4x4
     var projectionMatrix: float4x4
+    var normalMatrix: float3x3
 }
 
 class Renderer: NSObject, MTKViewDelegate {
@@ -297,7 +298,9 @@ class Renderer: NSObject, MTKViewDelegate {
             let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
             let projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
             
-            var uniforms = Uniformssss(modelViewMatrix: modelViewMatrix, projectionMatrix: projectionMatrix)
+            var uniforms = Uniformssss(modelViewMatrix: modelViewMatrix,
+                                       projectionMatrix: projectionMatrix,
+                                       normalMatrix: modelMatrix.normalMatrix)
             
             commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniformssss>.size, index: 1)
             
