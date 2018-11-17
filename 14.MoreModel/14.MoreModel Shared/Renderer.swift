@@ -56,6 +56,8 @@ class Renderer: NSObject, MTKViewDelegate {
     
     var time: Float = 0
     
+    let depthStencilState: MTLDepthStencilState
+    
     init?(metalKitView: MTKView) {
         self.device = metalKitView.device!
         guard let queue = self.device.makeCommandQueue() else { return nil }
@@ -70,11 +72,10 @@ class Renderer: NSObject, MTKViewDelegate {
         
         uniforms = UnsafeMutableRawPointer(dynamicUniformBuffer.contents()).bindMemory(to:Uniforms.self, capacity:1)
         
-        metalKitView.depthStencilPixelFormat = MTLPixelFormat.depth32Float_stencil8
+        metalKitView.depthStencilPixelFormat = MTLPixelFormat.depth32Float
         metalKitView.colorPixelFormat = MTLPixelFormat.bgra8Unorm_srgb
-        metalKitView.sampleCount = 1
+//        metalKitView.sampleCount = 1
         
-        let mtlVertexDescriptor = Renderer.buildMetalVertexDescriptor()
         
 //        do {
 //            pipelineState = try Renderer.buildRenderPipelineWithDevice(device: device,
@@ -106,6 +107,7 @@ class Renderer: NSObject, MTKViewDelegate {
 //        }
         
         self.mtkView = metalKitView
+        self.depthStencilState = Renderer.buildDepthStencilState(device: device)
         
         super.init()
         
@@ -266,7 +268,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
         pipelineDescriptor.colorAttachments[0].pixelFormat = self.mtkView.colorPixelFormat
         pipelineDescriptor.depthAttachmentPixelFormat      = self.mtkView.depthStencilPixelFormat
-        pipelineDescriptor.stencilAttachmentPixelFormat    = self.mtkView.depthStencilPixelFormat
+//        pipelineDescriptor.stencilAttachmentPixelFormat    = self.mtkView.depthStencilPixelFormat
         
         pipelineDescriptor.vertexDescriptor = self.vertexDescriptor
         do {
@@ -299,6 +301,7 @@ class Renderer: NSObject, MTKViewDelegate {
             
             commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniformssss>.size, index: 1)
             
+            commandEncoder.setDepthStencilState(depthStencilState)
             commandEncoder.setRenderPipelineState(pipelineState)
             
             for mesh in meshes
@@ -325,6 +328,15 @@ class Renderer: NSObject, MTKViewDelegate {
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         
+    }
+    
+    static func buildDepthStencilState(device: MTLDevice) -> MTLDepthStencilState
+    {
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .less
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        
+        return device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
     }
 }
 
