@@ -48,6 +48,9 @@ class Renderer: NSObject, MTKViewDelegate {
     
     let depthStencilState: MTLDepthStencilState
     
+    var baseColorTexture: MTLTexture!
+    let samplerState: MTLSamplerState
+    
     init?(metalKitView: MTKView) {
         self.device = metalKitView.device!
         guard let queue = self.device.makeCommandQueue() else { return nil }
@@ -59,6 +62,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
         self.mtkView = metalKitView
         self.depthStencilState = Renderer.buildDepthStencilState(device: device)
+        self.samplerState = Renderer.buildSamplerState(device: device)
         
         super.init()
         
@@ -87,6 +91,17 @@ class Renderer: NSObject, MTKViewDelegate {
             (_, meshes) = try MTKMesh.newMeshes(asset: asset, device: device)
         } catch {
             fatalError("can't get meshes from model")
+        }
+        
+        let textureLoader = MTKTextureLoader(device: device)
+        let options: [MTKTextureLoader.Option : Any] = [MTKTextureLoader.Option.generateMipmaps : true,
+                                                         MTKTextureLoader.Option.SRGB : true]
+        do {
+            let url = Bundle.main.url(forResource: "tiles_baseColor", withExtension: "jpg")
+           baseColorTexture = try textureLoader.newTexture(URL: url!, options: options)
+        } catch {
+            print(error.localizedDescription)
+            fatalError()
         }
     }
     
@@ -140,6 +155,9 @@ class Renderer: NSObject, MTKViewDelegate {
             
             commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniformssss>.size, index: 1)
             
+            commandEncoder.setFragmentTexture(baseColorTexture, index: 0)
+            commandEncoder.setFragmentSamplerState(samplerState, index: 0)
+            
             commandEncoder.setDepthStencilState(depthStencilState)
             commandEncoder.setRenderPipelineState(pipelineState)
             
@@ -176,5 +194,17 @@ class Renderer: NSObject, MTKViewDelegate {
         depthStencilDescriptor.isDepthWriteEnabled = true
         
         return device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
+    }
+    
+    static func buildSamplerState(device: MTLDevice) -> MTLSamplerState
+    {
+        let samplerDescriptor = MTLSamplerDescriptor()
+        
+        samplerDescriptor.normalizedCoordinates = true
+        samplerDescriptor.minFilter = .linear
+        samplerDescriptor.magFilter = .linear
+        samplerDescriptor.mipFilter = .linear
+        
+        return device.makeSamplerState(descriptor: samplerDescriptor)!
     }
 }
