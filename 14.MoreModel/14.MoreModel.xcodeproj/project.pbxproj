@@ -24,6 +24,8 @@
 		D5448002215E86C8008EE6D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5447FDA215E86C8008EE6D0 /* Assets.xcassets */; };
 		D5605B74219F146500FC050C /* MathUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605B73219F146500FC050C /* MathUtilities.swift */; };
 		D5605B75219F146500FC050C /* MathUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5605B73219F146500FC050C /* MathUtilities.swift */; };
+		D5605B7721A04E9200FC050C /* tiles_baseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D5605B7621A04E9200FC050C /* tiles_baseColor.jpg */; };
+		D5605B7821A04E9200FC050C /* tiles_baseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D5605B7621A04E9200FC050C /* tiles_baseColor.jpg */; };
 		D5EE81CD216E4B1800BA10ED /* teapot.obj in Resources */ = {isa = PBXBuildFile; fileRef = D5EE81CC216E4B1800BA10ED /* teapot.obj */; };
 		D5EE81CE216E4B1E00BA10ED /* teapot.obj in Resources */ = {isa = PBXBuildFile; fileRef = D5EE81CC216E4B1800BA10ED /* teapot.obj */; };
 /* End PBXBuildFile section */
@@ -45,6 +47,7 @@
 		D5447FF8215E86C8008EE6D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D5447FFA215E86C8008EE6D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D5605B73219F146500FC050C /* MathUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MathUtilities.swift; sourceTree = "<group>"; };
+		D5605B7621A04E9200FC050C /* tiles_baseColor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tiles_baseColor.jpg; sourceTree = "<group>"; };
 		D5EE81CC216E4B1800BA10ED /* teapot.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = teapot.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,8 +82,9 @@
 		D5447FD6215E86C7008EE6D0 /* 14.MoreModel Shared */ = {
 			isa = PBXGroup;
 			children = (
-				D5605B73219F146500FC050C /* MathUtilities.swift */,
+				D5605B7621A04E9200FC050C /* tiles_baseColor.jpg */,
 				D5EE81CC216E4B1800BA10ED /* teapot.obj */,
+				D5605B73219F146500FC050C /* MathUtilities.swift */,
 				D5447FD7215E86C7008EE6D0 /* Shaders.metal */,
 				D5447FD8215E86C7008EE6D0 /* Renderer.swift */,
 				D5447FD9215E86C7008EE6D0 /* ShaderTypes.h */,
@@ -204,6 +208,7 @@
 				D5447FE8215E86C8008EE6D0 /* Main.storyboard in Resources */,
 				D5448001215E86C8008EE6D0 /* Assets.xcassets in Resources */,
 				D5447FEB215E86C8008EE6D0 /* LaunchScreen.storyboard in Resources */,
+				D5605B7721A04E9200FC050C /* tiles_baseColor.jpg in Resources */,
 				D5EE81CD216E4B1800BA10ED /* teapot.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,6 +219,7 @@
 			files = (
 				D5EE81CE216E4B1E00BA10ED /* teapot.obj in Resources */,
 				D5447FF9215E86C8008EE6D0 /* Main.storyboard in Resources */,
+				D5605B7821A04E9200FC050C /* tiles_baseColor.jpg in Resources */,
 				D5448002215E86C8008EE6D0 /* Assets.xcassets in Resources */,
 				D5448000215E86C8008EE6D0 /* ShaderTypes.h in Resources */,
 			);
