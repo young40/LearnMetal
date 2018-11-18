@@ -166,9 +166,9 @@ class Renderer: NSObject, MTKViewDelegate {
             material.specularColor = float3(0.8, 0.8, 0.8)
             
             
-            let light0 = Light(worldPosition: float3(2, 2, 2), color: float3(1, 0, 0))
-            let light1 = Light(worldPosition: float3(-2, 2, 2), color: float3(0, 1, 0))
-            let light2 = Light(worldPosition: float3(0, -2, 2), color: float3(0, 0, 1))
+            let light0 = Light(worldPosition: float3( 2*sin(time), 2, 2), color: float3(1, 0, 0))
+            let light1 = Light(worldPosition: float3(-2*sin(time), 2, 2), color: float3(0, 1, 0))
+            let light2 = Light(worldPosition: float3( 0, -2*sin(time), 2), color: float3(0, 0, 1))
             
             var fragmentUniforms = FragmentUniforms(cameraWorldPosition: cameraWorldPosition,
                                                     ambientLightColor: float3(0.1, 0.1, 0.1),
